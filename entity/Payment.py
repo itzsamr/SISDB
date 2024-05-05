@@ -1,4 +1,4 @@
-#from Student import Student
+from Student import Student
 from datetime import datetime
 
 class Payment:

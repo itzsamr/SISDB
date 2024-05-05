@@ -1,6 +1,6 @@
-#from Student import Student
+from Student import Student
 from datetime import datetime
-#from Course import Course
+from Course import Course
 class Enrollment:
     def __init__(self, EnrollmentID, StudentID, CourseID, EnrollmentDate):
         self._EnrollmentID = EnrollmentID
