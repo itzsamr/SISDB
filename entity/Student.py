@@ -1,19 +1,18 @@
 from datetime import datetime
 from Course import Course
 from Enrollment import Enrollment
-#TASK 1
+
 class Student:
     def __init__(self, StudentID, FirstName, LastName, DateOfBirth, Email, PhoneNumber):
-#TASK 2
         self._StudentID = StudentID
         self._FirstName = FirstName
         self._LastName = LastName
         self._DateOfBirth = DateOfBirth
         self._Email = Email
         self._PhoneNumber = PhoneNumber
-        # self._enrolled_courses=[]
-        # self._payment_history = []
-        #self._enrollments = []
+        self._enrolled_courses = []
+        self._payment_history = []
+        self._enrollments = []
 
     def __init__(self, db_connector):
         self._db_connector = db_connector
@@ -81,18 +80,10 @@ class Student:
         else:
             raise ValueError("Invalid phone number format.")
 
-#TASK 3
     def EnrollInCourse(self, course):
-        self._enrolled_courses.append(course)
-        print(f"Student {self.FirstName} {self.LastName} enrolled in {course.CourseName}.")
-
-    '''
-s= Student(StudentID=1, FirstName="Aniket", LastName="Biyani", DateOfBirth=datetime(2002, 3, 8),
-            Email="aniket.biyani@gmail.com", PhoneNumber="1234567890")
-math_course = Course(101, "Mathematics", "MATH101", "Professor Smith")
-
-s.EnrollInCourse(math_course)
-    '''
+        enrollment = Enrollment(EnrollmentID=Enrollment.EnrollmentID, StudentID=self._StudentID, CourseID=course.CourseID, EnrollmentDate=Enrollment.EnrollmentDate)
+        self._enrollments.append(enrollment)
+        print(f"Student {self._FirstName} {self._LastName} enrolled in {course.CourseName}.")
 
     def UpdateStudentInfo(self, firstName, lastName, dateOfBirth, email, phoneNumber):
         self.FirstName = firstName
@@ -102,23 +93,10 @@ s.EnrollInCourse(math_course)
         self.PhoneNumber = phoneNumber
         print("Student information updated successfully.")
 
-    '''    
-s= Student(StudentID=1, FirstName="Aniket", LastName="Biyani", DateOfBirth=datetime(2002, 3, 8),
-            Email="aniket.biyani@gmail.com", PhoneNumber="1234567890")
-s.UpdateStudentInfo("Aniket", "Biyani", (2001, 3, 8),
-                "aniket.biyani11@gmail.com", "1234567880")
-     '''
-
     def MakePayment(self, amount, paymentDate):
         payment_record = {"Amount": amount, "PaymentDate": paymentDate}
         self._payment_history.append(payment_record)
         print(f"Payment of {amount} made on {paymentDate} recorded successfully.")
-
-    '''
-s = Student(StudentID=1, FirstName="Aniket", LastName="Biyani", DateOfBirth=datetime(2002, 3, 8),
-                Email="aniket.biyani@gmail.com", PhoneNumber="1234567890")
-s.MakePayment(50,"12-12-2023")
-    '''
 
     def DisplayStudentInfo(self):
         print(f"Student ID: {self.StudentID}")
@@ -127,56 +105,24 @@ s.MakePayment(50,"12-12-2023")
         print(f"Email: {self.Email}")
         print(f"Phone Number: {self.PhoneNumber}")
 
-    '''          
-s = Student(StudentID=1, FirstName="Aniket", LastName="Biyani", DateOfBirth=datetime(2002, 3, 8),
-                Email="aniket.biyani@gmail.com", PhoneNumber="1234567890")
-s.DisplayStudentInfo()
-    '''
-
     def GetEnrolledCourses(self):
         return self._enrolled_courses
-
-    '''
-s= Student(StudentID=1, FirstName="Aniket", LastName="Biyani", DateOfBirth=datetime(2002, 3, 8),
-            Email="aniket.biyani@gmail.com", PhoneNumber="1234567890")
-math_course = Course(101, "Mathematics", "MATH101", "Professor Smith")
-
-s.EnrollInCourse(math_course)
-s.GetEnrolledCourses()
-
-     '''
 
     def GetPaymentHistory(self):
         return self._payment_history
 
-    '''
-s = Student(StudentID=1, FirstName="Aniket", LastName="Biyani", DateOfBirth=datetime(2002, 3, 8),
-                Email="aniket.biyani@gmail.com", PhoneNumber="1234567890")
-s.MakePayment(50,"12-12-2023")
-s.GetPaymentHistory()
-    '''
-#TASK 5
     @property
     def Enrollments(self):
         return self._enrollments
+
     @Enrollments.setter
     def Enrollments(self, new_enrollments):
-        if isinstance(new_enrollments, list) and all(
-                isinstance(enrollment, Enrollment) for enrollment in new_enrollments):
+        if isinstance(new_enrollments, list) and all(isinstance(enrollment, Enrollment) for enrollment in new_enrollments):
             self._enrollments = new_enrollments
         else:
             raise ValueError("Invalid list of enrollments.")
-    def EnrollInCourse(self, course):
-        enrollment = Enrollment(EnrollmentID=Enrollment.EnrollmentID,StudentID=self._StudentID, CourseID=course.CourseID,EnrollmentDate=Enrollment.EnrollmentDate)
-        self._enrollments.append(enrollment)
-        print(f"Student {self._FirstName} {self._LastName} enrolled in {course.CourseName}.")
-    '''
-student = Student(1, "John", "Doe", datetime(1995, 5, 15), "john.doe@email.com", "1234567890")
-math_course = Course(101, "Mathematics", "MATH101", "Professor Johnson")
-student.EnrollInCourse(math_course)
-    '''
-#TASK 9
-    def Add_Student(self,student_id, first_name, last_name, date_of_birth, email, phone_number):
+
+    def Add_Student(self, student_id, first_name, last_name, date_of_birth, email, phone_number):
         try:
             self._db_connector.open_connection()
 
@@ -187,11 +133,10 @@ student.EnrollInCourse(math_course)
                 cursor.execute(query, values)
 
             self._db_connector.connection.commit()
-            print("STUDENT DETAILS ADDED  successfully.")
+            print("STUDENT DETAILS ADDED successfully.")
 
         except Exception as e:
             print(f"Error adding student details: {e}")
 
         finally:
             self._db_connector.close_connection()
-

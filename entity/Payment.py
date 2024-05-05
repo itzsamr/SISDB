@@ -7,8 +7,10 @@ class Payment:
         self._StudentID = StudentID
         self._Amount = Amount
         self._PaymentDate = PaymentDate
+
     def __init__(self, db_connector):
         self._db_connector = db_connector
+
     @property
     def PaymentID(self):
         return self._PaymentID
@@ -26,7 +28,7 @@ class Payment:
 
     @StudentID.setter
     def StudentID(self, new_Student):
-        if isinstance(new_Student,int):
+        if isinstance(new_Student, int):
             self._Student = new_Student
         else:
             raise ValueError("Invalid Student reference.")
@@ -54,31 +56,20 @@ class Payment:
             raise ValueError("Invalid payment date format.")
 
     def GetStudent(self):
-       pass
+        pass
 
     def GetPaymentAmount(self):
         return self.Amount
 
     def GetPaymentDate(self):
         return self.PaymentDate
-    '''
-payment = Payment(101, 1, Amount=50, PaymentDate="2023-12-12")
 
-# Retrieve payment amount and date
-payment_amount = payment.GetPaymentAmount()
-payment_date = payment.GetPaymentDate()
-
-# Display payment information
-print(f"Payment Amount: {payment_amount}")
-print(f"Payment Date: {payment_date}")
-    '''
-#TASK 10
-    def Add_Payment(self, PaymentID, StudentID, Amount,PaymentDate):
+    def Add_Payment(self, PaymentID, StudentID, Amount, PaymentDate):
         try:
             self._db_connector.open_connection()
 
-            query = "INSERT INTO payments (payment_id, student_id, amount,payment_date) VALUES (%s, %s, %s, %s)"
-            values = (PaymentID, StudentID, Amount,PaymentDate)
+            query = "INSERT INTO payments (payment_id, student_id, amount, payment_date) VALUES (%s, %s, %s, %s)"
+            values = (PaymentID, StudentID, Amount, PaymentDate)
 
             with self._db_connector.connection.cursor() as cursor:
                 cursor.execute(query, values)
@@ -91,47 +82,51 @@ print(f"Payment Date: {payment_date}")
 
         finally:
             self._db_connector.close_connection()
-    def retrieve_studentrecord(self,StudentID):
+
+    def retrieve_student_record(self, StudentID):
         try:
             self._db_connector.open_connection()
 
-            query = "SELECT * FROM students where student_id=%s"
+            query = "SELECT * FROM students WHERE student_id=%s"
             values = (StudentID,)
 
             with self._db_connector.connection.cursor() as cursor:
                 cursor.execute(query, values)
                 student_details = cursor.fetchone()
             if student_details:
-                print("student_details:")
-                print(f"Student ID:{student_details[0]}")
-                print(f"Student First Name:{student_details[1]}")
-                print(f"Student Last Name:{student_details[2]}")
+                print("Student Details:")
+                print(f"Student ID: {student_details[0]}")
+                print(f"Student First Name: {student_details[1]}")
+                print(f"Student Last Name: {student_details[2]}")
                 print(f"Date Of Birth: {student_details[3]}")
                 print(f"Email: {student_details[4]}")
-                print(f"Phone no:{student_details[5]}")
+                print(f"Phone no: {student_details[5]}")
             else:
-                print("student id not found.")
+                print("Student ID not found.")
+
             self._db_connector.connection.commit()
+
         except Exception as e:
-            print(f"Error getting course details: {e}")
+            print(f"Error getting student details: {e}")
+
         finally:
             self._db_connector.close_connection()
-    def update_payment_amount(self,Amount,StudentID):
+
+    def update_payment_amount(self, Amount, StudentID):
         try:
             self._db_connector.open_connection()
 
-            query = "UPDATE Payments SET Amount=%s where student_id=%s"
-            values = (Amount,StudentID)
+            query = "UPDATE Payments SET Amount=%s WHERE student_id=%s"
+            values = (Amount, StudentID)
 
             with self._db_connector.connection.cursor() as cursor:
                 cursor.execute(query, values)
 
             self._db_connector.connection.commit()
-            print("Student balance  UPDATED successfully.")
+            print("Student balance UPDATED successfully.")
 
         except Exception as e:
             print(f"Error updating student balance details: {e}")
 
         finally:
             self._db_connector.close_connection()
-

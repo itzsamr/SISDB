@@ -1,4 +1,5 @@
 from Course import Course
+
 class Teacher:
     def __init__(self, TeacherID, FirstName, LastName, Email):
         self._TeacherID = TeacherID
@@ -6,8 +7,10 @@ class Teacher:
         self._LastName = LastName
         self._Email = Email
         self.AssignedCourses = []
+
     def __init__(self, db_connector):
         self._db_connector = db_connector
+
     @property
     def TeacherID(self):
         return self._TeacherID
@@ -53,36 +56,22 @@ class Teacher:
             raise ValueError("Invalid email format.")
 
     def UpdateTeacherInfo(self, teacherID, firstName, lastName, email):
-        self.TeacherID=teacherID
-        self.FirstName=firstName
-        self.LastName=lastName
-        self.Email=email
+        self.TeacherID = teacherID
+        self.FirstName = firstName
+        self.LastName = lastName
+        self.Email = email
         print("Teacher information updated successfully.")
-    '''   
-teacher_info = Teacher(101, "Aniket","Biyani","aniketbiyani@gmail.com")
-teacher_info.UpdateTeacherInfo(101,"ms Karthika","Thangiraj","karthikamca@gmail.com")
-     '''
 
     def DisplayTeacherInfo(self):
         print(f"Teacher ID: {self.TeacherID}")
-        print(f"First Name Code: {self.FirstName}")
+        print(f"First Name: {self.FirstName}")
         print(f"Last Name: {self.LastName}")
-        print(f"Email : {self.Email}")
-    '''    
-teacher = Teacher(101, "Aniket","Biyani","aniketbiyani@gmail.com")
-teacher.DisplayTeacherInfo()
-    '''
-#TASK 5
+        print(f"Email: {self.Email}")
+
     def AssignToCourse(self, course):
         self.AssignedCourses.append(course)
         print(f"Teacher {self.FirstName} {self.LastName} assigned to {course.CourseName}.")
-    '''
-teacher = Teacher(1, "Professor", "Karthika", "prof.karthika@email.com")
-python_course = Course(101, "Python", "101", "Professor Karthika")
 
-teacher.AssignToCourse(python_course)
-    '''
-#TASK 9
     def Add_Teacher(self, TeacherID, FirstName, LastName, Email):
         try:
             self._db_connector.open_connection()
@@ -94,10 +83,10 @@ teacher.AssignToCourse(python_course)
                 cursor.execute(query, values)
 
             self._db_connector.connection.commit()
-            print("Teacher DETAILS ADDED  successfully.")
+            print("Teacher DETAILS ADDED successfully.")
 
         except Exception as e:
-            print(f"Error adding student details: {e}")
+            print(f"Error adding teacher details: {e}")
 
         finally:
             self._db_connector.close_connection()

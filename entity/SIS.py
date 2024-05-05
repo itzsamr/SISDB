@@ -4,7 +4,8 @@ from Course import Course
 from Payment import Payment
 from Enrollment import Enrollment
 from datetime import datetime
-from exception import StudentNotFoundException,CourseNotFoundException,TeacherNotFoundException
+from exception import StudentNotFoundException, CourseNotFoundException, TeacherNotFoundException
+
 class SIS:
     def __init__(self):
         self._enrollments = []
@@ -21,16 +22,15 @@ class SIS:
         self._enrollments.append(enrollment)
         print(f"Student {student.FirstName} enrolled in {course.CourseName}.")
 
-
     def AssignTeacherToCourse(self, teacher, course):
         teacher_assignment = {"teacher": teacher, "course": course}
         self._teachers_assigned_courses.append(teacher_assignment)
         print(f"Teacher {teacher.FirstName} assigned to {course.CourseName}.")
 
-    def RecordPayment(self, paymentid,studentid, amount, paymentDate):
-        payment = Payment(paymentid,studentid, amount, paymentDate)
+    def RecordPayment(self, paymentid, studentid, amount, paymentDate):
+        payment = Payment(paymentid, studentid, amount, paymentDate)
         self._payments.append(payment)
-        print(f"Payment of {amount}  recorded successfully.")
+        print(f"Payment of {amount} recorded successfully.")
 
     def GenerateEnrollmentReport(self, course):
         enrolled_students = [enrollment["student"] for enrollment in self._enrollments if enrollment["course"] == course]
@@ -51,22 +51,6 @@ class SIS:
         print(f"- Enrollments: {enrollments_count}")
         print(f"- Total Payments: {total_payments}")
 
-    '''
-student=Student(StudentID=1, FirstName="Aniket", LastName="Biyani", DateOfBirth=datetime(2002, 3, 8),
-            Email="aniket.biyani@gmail.com", PhoneNumber="1234567890")
-teacher =Teacher(101,"ms Karthika","Thangiraj","karthikamca@gmail.com")
-python_course = Course(301, "Python", "202", "karthika")
-
-sis = SIS()
-sis.EnrollStudentInCourse(student,python_course)
-sis.AssignTeacherToCourse(teacher, python_course)
-sis.RecordPayment( 201,1,8000,"2023-01-15")
-sis.GenerateEnrollmentReport(python_course)
-sis.GeneratePaymentReport(student)
-sis.CalculateCourseStatistics(python_course)
-    '''
-#TASK 6
-
     def AddEnrollment(self, student, course, enrollment_date):
         if student not in self.students:
             raise StudentNotFoundException("Student not found in the system.")
@@ -78,17 +62,6 @@ sis.CalculateCourseStatistics(python_course)
 
         self.enrollments.append(enrollment)
 
-    '''
-sis = SIS()
-student=Student(StudentID=1, FirstName="Aniket", LastName="Biyani", DateOfBirth=datetime(2002, 3, 8),
-            Email="aniket.biyani@gmail.com", PhoneNumber="1234567890")
-course = Course(301, "Python", "202", "karthika")
-sis.students.append(student)
-sis.courses.append(course)
-sis.AddEnrollment(student, course, datetime.now())
-print(f"Student course added in enrollment")
-    '''
-
     def AssignCourseToTeacher(self, course, teacher):
         if course not in self.courses:
             raise CourseNotFoundException("Course not found in the system.")
@@ -96,19 +69,6 @@ print(f"Student course added in enrollment")
             raise TeacherNotFoundException("Teacher not found in the system.")
 
         teacher.AssignedCourses.append(course)
-    '''   
-sis = SIS()
-teacher = Teacher(1, "Professor", "Karthika", "prof.karthika@email.com")
-course = Course(101, "Python", "101", "Professor Karthika")
-
-sis.teachers.append(teacher)
-sis.courses.append(course)
-
-sis.AssignCourseToTeacher(course, teacher)
-print(f"{teacher.FirstName} {teacher.LastName}'s Assigned Courses:")
-for assigned_course in teacher.AssignedCourses:
-    print(f"- {assigned_course.CourseName} (Code: {assigned_course.CourseCode})")
-    '''
 
     def AddPayment(self, student, amount, payment_date):
         if student not in self.students:
@@ -120,22 +80,12 @@ for assigned_course in teacher.AssignedCourses:
         self.payments.append(payment)
 
         print(f"Payment of {amount} made by {student.FirstName} {student.LastName} on {payment_date}.")
-    '''
-sis = SIS()
-
-student = Student(StudentID=1, FirstName="Aniket", LastName="Biyani", DateOfBirth=datetime(2002, 3, 8),
-                  Email="aniket.biyani@gmail.com", PhoneNumber="1234567890")
-
-sis.students.append(student)
-
-sis.AddPayment(student, amount=50, payment_date=datetime.now())
-   '''
 
     def GetEnrollmentsForStudent(self, student):
         if student not in self.students:
             raise StudentNotFoundException("Student not found in the system.")
 
-        student_enrollments = [enrollment for enrollment in self.enrollments if enrollment.StudentID== student.StudentID]
+        student_enrollments = [enrollment for enrollment in self.enrollments if enrollment.StudentID == student.StudentID]
         return student_enrollments
 
     def GetCoursesForTeacher(self, teacher):
@@ -166,8 +116,3 @@ courses_for_teacher = sis.GetCoursesForTeacher(teacher)
 print(f"Courses assigned to {teacher.FirstName}:")
 for course in courses_for_teacher:
     print(f"- {course.CourseName}")
-
-
-
-
-
