@@ -5,9 +5,13 @@ from Teacher import Teacher
 from Course import Course
 from Payment import Payment
 
-db_connector = DatabaseConnector(DRIVER_NAME = 'SQL SERVER', SERVER_NAME = 'SAMAR\\MSSQLSERVER01', DATABASE_NAME = 'SISDB')
+DRIVER_NAME = 'SQL SERVER'
+SERVER_NAME = 'SAMAR\\MSSQLSERVER01'
+DATABASE_NAME = 'SISDB'
+
+db_connector = DatabaseConnector(SERVER_NAME, DATABASE_NAME, driver=DRIVER_NAME)
 db_connector.open_connection()
-students_manager= Student(db_connector)
+students_manager = Student(db_connector)
 
 #students_manager.Add_Student(11,"John","Doe","1995-08-15","john.doe@example.com","1234567890")
 
