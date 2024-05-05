@@ -1,7 +1,3 @@
-# sis_entities.py
-# Task 1: Define Classes
-# Task 2: Implement Constructors
-
 class Student:
     def __init__(self, student_id, first_name, last_name, date_of_birth, email, phone_number):
         self.student_id = student_id
@@ -42,4 +38,3 @@ class Payment:
         self.student_id = student_id
         self.amount = amount
         self.payment_date = payment_date
-
