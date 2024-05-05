@@ -5,7 +5,7 @@ from Teacher import Teacher
 from Course import Course
 from Payment import Payment
 
-db_connector = DatabaseConnector(host ="localhost", database ="ssidb", user ="root", password ="Aniket@123")
+db_connector = DatabaseConnector(DRIVER_NAME = 'SQL SERVER', SERVER_NAME = 'SAMAR\\MSSQLSERVER01', DATABASE_NAME = 'SISDB')
 db_connector.open_connection()
 students_manager= Student(db_connector)
 
