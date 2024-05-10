@@ -1,2 +1,4 @@
 class StudentNotFoundException(Exception):
-    pass
+    def __init__(self, message="Student not found."):
+        self.message = message
+        super().__init__(self.message)
