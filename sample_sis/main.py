@@ -117,9 +117,13 @@ def main():
                         "Are you sure you want to delete this student? (yes/no): "
                     )
                     if confirm.lower() == "yes":
-                        # Delete the student from the database
-                        student_dao.delete_student(student_id)
-                        print("Student deleted successfully.")
+                        try:
+                            # Delete the student from the database
+                            student_dao.delete_student(student_id)
+                            print("Student deleted successfully.")
+                        except Exception as e:
+                            print("An error occurred while deleting the student:", e)
+
                     else:
                         print("Deletion canceled.")
                 else:
