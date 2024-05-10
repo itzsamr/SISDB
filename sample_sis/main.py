@@ -15,38 +15,57 @@ from Teacher import Teacher
 from Payment import Payment
 
 
-# Function to display the menu options
-def display_menu():
-    print("Student Information System (SIS) Menu:")
-    print("1. Add Student")
-    print("2. Update Student")
-    print("3. Delete Student")
-    print("4. Add Course")
-    print("5. Update Course")
-    print("6. Delete Course")
-    print("7. Enroll Student in Course")
-    print("8. Record Payment")
-    print("9. Exit")
+# Function to display the main menu
+def display_main_menu():
+    print("\nStudent Information System (SIS) Menu:")
+    print("1. Students")
+    print("2. Courses")
+    print("3. Enrollments")
+    print("4. Teachers")
+    print("5. Payments")
+    print("6. Exit")
 
 
-# Main function to run the SIS application
-def main():
-    # Initialize DAO objects
-    student_dao = StudentDAO()
-    course_dao = CourseDAO()
-    enrollment_dao = EnrollmentDAO()
-    teacher_dao = TeacherDAO()
-    payment_dao = PaymentDAO()
+# Function to display the sub-menu for each entity
+def display_entity_menu(entity):
+    print(f"\n{entity} Menu:")
+    print("1. View entire table")
+    print("2. Add")
+    print("3. Update")
+    print("4. Delete")
+    print("5. Back")
 
-    # Main menu loop
+
+# Function to handle the student-related actions
+def handle_student_actions(student_dao):
     while True:
-        # Display the menu
-        display_menu()
+        display_entity_menu("Students")
         choice = input("Enter your choice: ")
 
         if choice == "1":
+            # View entire student table
+            print("Viewing entire student table:")
+            print("-----------------------------")
+            try:
+                # Retrieve all students from the database
+                all_students = student_dao.get_all_students()
+
+                # Print each student's details
+                for student in all_students:
+                    print(f"Student ID: {student.student_id}")
+                    print(f"First Name: {student.first_name}")
+                    print(f"Last Name: {student.last_name}")
+                    print(f"Date of Birth: {student.date_of_birth}")
+                    print(f"Email: {student.email}")
+                    print(f"Phone Number: {student.phone_number}")
+                    print()
+            except Exception as e:
+                print("An error occurred:", e)
+
+        elif choice == "2":
             # Add Student
             print("Adding a new student:")
+            print("---------------------")
             student_id = input("Enter student ID: ")
             first_name = input("Enter first name: ")
             last_name = input("Enter last name: ")
@@ -66,7 +85,7 @@ def main():
             except Exception as e:
                 print("An error occurred:", e)
 
-        elif choice == "2":
+        elif choice == "3":
             # Update Student
             try:
                 student_id = input("Enter the student ID to update: ")
@@ -105,166 +124,180 @@ def main():
             except Exception as e:
                 print("An error occurred:", e)
 
-        elif choice == "3":
-            # Delete Student
-            try:
-                student_id = input("Enter the student ID to delete: ")
-                # Check if the student exists in the database
-                student = student_dao.get_student_by_id(student_id)
-
-                if student:
-                    confirm = input(
-                        "Are you sure you want to delete this student? (yes/no): "
-                    )
-                    if confirm.lower() == "yes":
-                        try:
-                            # Delete the student from the database
-                            student_dao.delete_student(student_id)
-                            print("Student deleted successfully.")
-                        except Exception as e:
-                            print("An error occurred while deleting the student:", e)
-
-                    else:
-                        print("Deletion canceled.")
-                else:
-                    print("Student not found.")
-            except Exception as e:
-                print("An error occurred:", e)
-
         elif choice == "4":
-            # Add Course
-            try:
-                print("Adding a new course:")
-                course_name = input("Enter course name: ")
-                credits = input("Enter credits: ")
-                teacher_id = input("Enter teacher ID: ")
-
-                # Create a Course object
-                new_course = Course(course_name, credits, teacher_id)
-
-                # Add the course to the database
-                course_dao.add_course(new_course)
-                print("Course added successfully.")
-            except Exception as e:
-                print("An error occurred:", e)
+            # Delete student
+            print("Deleting student:")
+            # Implement this option
 
         elif choice == "5":
-            # Update Course
-            try:
-                course_id = input("Enter the course ID to update: ")
-                # Fetch course details from the database
-                course = course_dao.get_course_by_id(course_id)
+            break
 
-                if course:
-                    print("Current details of the course:")
-                    print("Course ID:", course.course_id)
-                    print("Course Name:", course.course_name)
-                    print("Credits:", course.credits)
-                    print("Teacher ID:", course.teacher_id)
+        else:
+            print("Invalid choice. Please enter a valid option.")
 
-                    # Prompt user to enter updated details
-                    print("\nEnter updated details:")
-                    course_name = input("Enter course name: ")
-                    credits = input("Enter credits: ")
-                    teacher_id = input("Enter teacher ID: ")
 
-                    # Update the course object with new details
-                    course.course_name = course_name
-                    course.credits = credits
-                    course.teacher_id = teacher_id
+# Function to handle the course-related actions
+def handle_course_actions(course_dao):
+    while True:
+        display_entity_menu("Courses")
+        choice = input("Enter your choice: ")
 
-                    # Update the course in the database
-                    course_dao.update_course(course)
-                    print("Course details updated successfully.")
-                else:
-                    print("Course not found.")
-            except Exception as e:
-                print("An error occurred:", e)
+        if choice == "1":
+            # View entire course table
+            print("Viewing entire course table:")
+            # Implement this option
+
+        elif choice == "2":
+            # Add course
+            print("Adding a new course:")
+            # Implement this option
+
+        elif choice == "3":
+            # Update course
+            print("Updating course:")
+            # Implement this option
+
+        elif choice == "4":
+            # Delete course
+            print("Deleting course:")
+            # Implement this option
+
+        elif choice == "5":
+            break
+
+        else:
+            print("Invalid choice. Please enter a valid option.")
+
+
+# Function to handle the enrollment-related actions
+def handle_enrollment_actions(enrollment_dao):
+    while True:
+        display_entity_menu("Enrollments")
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            # View entire enrollment table
+            print("Viewing entire enrollment table:")
+            # Implement this option
+
+        elif choice == "2":
+            # Add enrollment
+            print("Adding a new enrollment:")
+            # Implement this option
+
+        elif choice == "3":
+            # Update enrollment
+            print("Updating enrollment:")
+            # Implement this option
+
+        elif choice == "4":
+            # Delete enrollment
+            print("Deleting enrollment:")
+            # Implement this option
+
+        elif choice == "5":
+            break
+
+        else:
+            print("Invalid choice. Please enter a valid option.")
+
+
+# Function to handle the teacher-related actions
+def handle_teacher_actions(teacher_dao):
+    while True:
+        display_entity_menu("Teachers")
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            # View entire teacher table
+            print("Viewing entire teacher table:")
+            # Implement this option
+
+        elif choice == "2":
+            # Add teacher
+            print("Adding a new teacher:")
+            # Implement this option
+
+        elif choice == "3":
+            # Update teacher
+            print("Updating teacher:")
+            # Implement this option
+
+        elif choice == "4":
+            # Delete teacher
+            print("Deleting teacher:")
+            # Implement this option
+
+        elif choice == "5":
+            break
+
+        else:
+            print("Invalid choice. Please enter a valid option.")
+
+
+# Function to handle the payment-related actions
+def handle_payment_actions(payment_dao):
+    while True:
+        display_entity_menu("Payments")
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            # View entire payment table
+            print("Viewing entire payment table:")
+            # Implement this option
+
+        elif choice == "2":
+            # Add payment
+            print("Adding a new payment:")
+            # Implement this option
+
+        elif choice == "3":
+            # Update payment
+            print("Updating payment:")
+            # Implement this option
+
+        elif choice == "4":
+            # Delete payment
+            print("Deleting payment:")
+            # Implement this option
+
+        elif choice == "5":
+            break
+
+        else:
+            print("Invalid choice. Please enter a valid option.")
+
+
+# Main function to run the SIS application
+def main():
+    # Initialize DAO objects
+    student_dao = StudentDAO()
+    course_dao = CourseDAO()
+    enrollment_dao = EnrollmentDAO()
+    teacher_dao = TeacherDAO()
+    payment_dao = PaymentDAO()
+
+    # Main menu loop
+    while True:
+        display_main_menu()
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            handle_student_actions(student_dao)
+
+        elif choice == "2":
+            handle_course_actions(course_dao)
+
+        elif choice == "3":
+            handle_enrollment_actions(enrollment_dao)
+
+        elif choice == "4":
+            handle_teacher_actions(teacher_dao)
+
+        elif choice == "5":
+            handle_payment_actions(payment_dao)
 
         elif choice == "6":
-            # Delete Course
-            try:
-                course_id = input("Enter the course ID to delete: ")
-                # Check if the course exists in the database
-                course = course_dao.get_course_by_id(course_id)
-
-                if course:
-                    confirm = input(
-                        "Are you sure you want to delete this course? (yes/no): "
-                    )
-                    if confirm.lower() == "yes":
-                        # Delete the course from the database
-                        course_dao.delete_course(course_id)
-                        print("Course deleted successfully.")
-                    else:
-                        print("Deletion canceled.")
-                else:
-                    print("Course not found.")
-            except Exception as e:
-                print("An error occurred:", e)
-
-        elif choice == "7":
-            # Enroll Student in Course
-            try:
-                student_id = input("Enter the student ID: ")
-                course_id = input("Enter the course ID: ")
-
-                # Check if the student and course exist in the database
-                student = student_dao.get_student_by_id(student_id)
-                course = course_dao.get_course_by_id(course_id)
-
-                if student and course:
-                    # Check if the student is already enrolled in the course
-                    existing_enrollments = (
-                        enrollment_dao.get_enrollments_by_student_course(
-                            student_id, course_id
-                        )
-                    )
-                    if existing_enrollments:
-                        raise DuplicateEnrollmentException(
-                            "Student is already enrolled in this course."
-                        )
-
-                    # Create an Enrollment object
-                    new_enrollment = Enrollment(student_id, course_id)
-
-                    # Add the enrollment to the database
-                    enrollment_dao.add_enrollment(new_enrollment)
-                    print("Student enrolled in the course successfully.")
-                else:
-                    if not student:
-                        raise StudentNotFoundException("Student not found.")
-                    if not course:
-                        raise CourseNotFoundException("Course not found.")
-            except Exception as e:
-                print("An error occurred:", e)
-
-        elif choice == "8":
-            # Record Payment
-            try:
-                student_id = input("Enter the student ID: ")
-                amount = float(input("Enter the payment amount: "))
-                payment_date = input("Enter the payment date (YYYY-MM-DD): ")
-
-                # Check if the student exists in the database
-                student = student_dao.get_student_by_id(student_id)
-
-                if student:
-                    # Create a Payment object
-                    new_payment = Payment(student_id, amount, payment_date)
-
-                    # Add the payment to the database
-                    payment_dao.add_payment(new_payment)
-                    print("Payment recorded successfully.")
-                else:
-                    raise StudentNotFoundException("Student not found.")
-            except ValueError:
-                print("Invalid input for amount.")
-            except Exception as e:
-                print("An error occurred:", e)
-
-        elif choice == "9":
-            # Exit the program
             print("Exiting the program. Goodbye!")
             break
 
