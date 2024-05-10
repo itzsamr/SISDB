@@ -1,18 +1,18 @@
-from StudentDAO import StudentDAO
-from CourseDAO import CourseDAO
-from EnrollmentDAO import EnrollmentDAO
-from TeacherDAO import TeacherDAO
-from PaymentDAO import PaymentDAO
-from DuplicateEnrollmentException import DuplicateEnrollmentException
-from CourseNotFoundException import CourseNotFoundException
-from StudentNotFoundException import StudentNotFoundException
-from TeacherNotFoundException import TeacherNotFoundException
-from PaymentValidationException import PaymentValidationException
-from Student import Student
-from Course import Course
-from Enrollment import Enrollment
-from Teacher import Teacher
-from Payment import Payment
+from dao.StudentDAO import StudentDAO
+from dao.CourseDAO import CourseDAO
+from dao.EnrollmentDAO import EnrollmentDAO
+from dao.TeacherDAO import TeacherDAO
+from dao.PaymentDAO import PaymentDAO
+from exception.DuplicateEnrollmentException import DuplicateEnrollmentException
+from exception.CourseNotFoundException import CourseNotFoundException
+from exception.StudentNotFoundException import StudentNotFoundException
+from exception.TeacherNotFoundException import TeacherNotFoundException
+from exception.PaymentValidationException import PaymentValidationException
+from entity.Student import Student
+from entity.Course import Course
+from entity.Enrollment import Enrollment
+from entity.Teacher import Teacher
+from entity.Payment import Payment
 
 
 # Function to display the main menu
