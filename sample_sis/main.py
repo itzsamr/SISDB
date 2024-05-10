@@ -162,22 +162,100 @@ def handle_course_actions(course_dao):
         if choice == "1":
             # View entire course table
             print("Viewing entire course table:")
-            # Implement this option
+            try:
+                # Fetch all courses from the database
+                all_courses = course_dao.get_all_courses()
+
+                if all_courses:
+                    # Display each course
+                    for course in all_courses:
+                        print("Course ID:", course.course_id)
+                        print("Course Name:", course.course_name)
+                        print("Credits:", course.credits)
+                        print("Teacher ID:", course.teacher_id)
+                        print()
+
+                else:
+                    print("No courses found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "2":
             # Add course
             print("Adding a new course:")
-            # Implement this option
+            course_id = input("Enter course ID: ")
+            course_name = input("Enter course name: ")
+            credits = input("Enter credits: ")
+            teacher_id = input("Enter teacher ID: ")
+
+            # Create a Course object
+            new_course = Course(course_id, course_name, credits, teacher_id)
+
+            try:
+                # Add the course to the database
+                course_dao.add_course(new_course)
+                print("Course added successfully.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "3":
             # Update course
             print("Updating course:")
-            # Implement this option
+            course_id = input("Enter the course ID to update: ")
+
+            try:
+                # Fetch course details from the database
+                course = course_dao.get_course_by_id(course_id)
+
+                if course:
+                    print("Current details of the course:")
+                    print("Course ID:", course.course_id)
+                    print("Course Name:", course.course_name)
+                    print("Credits:", course.credits)
+                    print("Teacher ID:", course.teacher_id)
+
+                    # Prompt user to enter updated details
+                    print("\nEnter updated details:")
+                    course_name = input("Enter course name: ")
+                    credits = input("Enter credits: ")
+                    teacher_id = input("Enter teacher ID: ")
+
+                    # Update the course object with new details
+                    course.course_name = course_name
+                    course.credits = credits
+                    course.teacher_id = teacher_id
+
+                    # Update the course in the database
+                    course_dao.update_course(course)
+                    print("Course details updated successfully.")
+                else:
+                    print("Course not found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "4":
             # Delete course
             print("Deleting course:")
-            # Implement this option
+            course_id = input("Enter the course ID to delete: ")
+
+            try:
+                # Check if the course exists in the database
+                course = course_dao.get_course_by_id(course_id)
+
+                if course:
+                    confirm = input(
+                        "Are you sure you want to delete this course? (yes/no): "
+                    )
+                    if confirm.lower() == "yes":
+                        # Delete the course from the database
+                        course_dao.delete_course(course_id)
+                        print("Course deleted successfully.")
+                    else:
+                        print("Deletion canceled.")
+                else:
+                    print("Course not found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "5":
             break
