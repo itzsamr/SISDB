@@ -417,17 +417,79 @@ def handle_teacher_actions(teacher_dao):
         elif choice == "2":
             # Add teacher
             print("Adding a new teacher:")
-            # Implement this option
+            teacher_id = input("Enter teacher ID: ")
+            first_name = input("Enter first name: ")
+            last_name = input("Enter last name: ")
+            email = input("Enter email: ")
+
+            # Create a Teacher object
+            new_teacher = Teacher(teacher_id, first_name, last_name, email)
+
+            try:
+                # Add the teacher to the database
+                teacher_dao.add_teacher(new_teacher)
+                print("Teacher added successfully.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "3":
             # Update teacher
             print("Updating teacher:")
-            # Implement this option
+            teacher_id = input("Enter teacher ID to update: ")
+
+            try:
+                # Fetch the teacher from the database
+                teacher = teacher_dao.get_teacher_by_id(teacher_id)
+
+                if teacher:
+                    print("Current details of the teacher:")
+                    print("Teacher ID:", teacher.teacher_id)
+                    print("First Name:", teacher.first_name)
+                    print("Last Name:", teacher.last_name)
+                    print("Email:", teacher.email)
+
+                    # Prompt user to enter updated details
+                    print("\nEnter updated details:")
+                    first_name = input("Enter first name: ")
+                    last_name = input("Enter last name: ")
+                    email = input("Enter email: ")
+
+                    # Update the teacher object with new details
+                    teacher.first_name = first_name
+                    teacher.last_name = last_name
+                    teacher.email = email
+
+                    # Update the teacher in the database
+                    teacher_dao.update_teacher(teacher)
+                    print("Teacher details updated successfully.")
+                else:
+                    print("Teacher not found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "4":
             # Delete teacher
             print("Deleting teacher:")
-            # Implement this option
+            teacher_id = input("Enter teacher ID to delete: ")
+
+            try:
+                # Check if the teacher exists in the database
+                teacher = teacher_dao.get_teacher_by_id(teacher_id)
+
+                if teacher:
+                    confirm = input(
+                        "Are you sure you want to delete this teacher? (yes/no): "
+                    )
+                    if confirm.lower() == "yes":
+                        # Delete the teacher from the database
+                        teacher_dao.delete_teacher(teacher_id)
+                        print("Teacher deleted successfully.")
+                    else:
+                        print("Deletion canceled.")
+                else:
+                    print("Teacher not found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "5":
             break
