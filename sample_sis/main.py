@@ -273,22 +273,103 @@ def handle_enrollment_actions(enrollment_dao):
         if choice == "1":
             # View entire enrollment table
             print("Viewing entire enrollment table:")
-            # Implement this option
+
+            try:
+                # Retrieve all enrollments from the database
+                all_enrollments = enrollment_dao.get_all_enrollments()
+
+                if all_enrollments:
+                    # Print header
+                    print(
+                        "{:<15} {:<15} {:<15}".format(
+                            "Student ID", "Course ID", "Enrollment Date"
+                        )
+                    )
+                    print("-" * 45)
+
+                    # Print each enrollment's details
+                    for enrollment in all_enrollments:
+                        print(
+                            "{:<15} {:<15} {:<15}".format(
+                                enrollment.student_id,
+                                enrollment.course_id,
+                                enrollment.enrollment_date,
+                            )
+                        )
+                else:
+                    print("No enrollments found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "2":
             # Add enrollment
             print("Adding a new enrollment:")
-            # Implement this option
+            enrollment_id = input("Enter enrollment ID: ")
+            student_id = input("Enter student ID: ")
+            course_id = input("Enter course ID: ")
+            enrollment_date = input("Enter the date (YYYY-MM-DD): ")
+
+            # Create an Enrollment object
+            new_enrollment = Enrollment(
+                enrollment_id, student_id, course_id, enrollment_date
+            )
+
+            try:
+                # Add the enrollment to the database
+                enrollment_dao.add_enrollment(new_enrollment)
+                print("Enrollment added successfully.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "3":
             # Update enrollment
             print("Updating enrollment:")
-            # Implement this option
+            enrollment_id = input("Enter enrollment ID to update: ")
+            new_student_id = input("Enter new student ID: ")
+            new_course_id = input("Enter new course ID: ")
+            enrollment_date = input("Enter enrollment date (YYYY-MM-DD): ")
+
+            try:
+                # Fetch the enrollment from the database
+                enrollment = enrollment_dao.get_enrollment_by_id(enrollment_id)
+
+                if enrollment:
+                    # Update the enrollment object with new details
+                    enrollment.student_id = new_student_id
+                    enrollment.course_id = new_course_id
+                    enrollment.enrollment_date = enrollment_date
+
+                    # Update the enrollment in the database
+                    enrollment_dao.update_enrollment(enrollment)
+                    print("Enrollment updated successfully.")
+                else:
+                    print("Enrollment not found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "4":
             # Delete enrollment
             print("Deleting enrollment:")
-            # Implement this option
+            enrollment_id = input("Enter enrollment ID to delete: ")
+
+            try:
+                # Check if the enrollment exists in the database
+                enrollment = enrollment_dao.get_enrollment_by_id(enrollment_id)
+
+                if enrollment:
+                    confirm = input(
+                        "Are you sure you want to delete this enrollment? (yes/no): "
+                    )
+                    if confirm.lower() == "yes":
+                        # Delete the enrollment from the database
+                        enrollment_dao.delete_enrollment(enrollment_id)
+                        print("Enrollment deleted successfully.")
+                    else:
+                        print("Deletion canceled.")
+                else:
+                    print("Enrollment not found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "5":
             break
@@ -306,7 +387,32 @@ def handle_teacher_actions(teacher_dao):
         if choice == "1":
             # View entire teacher table
             print("Viewing entire teacher table:")
-            # Implement this option
+            try:
+                # Retrieve all teachers from the database
+                all_teachers = teacher_dao.get_all_teachers()
+
+                if all_teachers:
+                    # Print header
+                    print(
+                        "{:<15} {:<15} {:<15} {:<15}".format(
+                            "Teacher ID", "First Name", "Last Name", "Email"
+                        )
+                    )
+                    print("-" * 60)
+                    # Print each teacher's details
+                    for teacher in all_teachers:
+                        print(
+                            "{:<15} {:<15} {:<15} {:<15}".format(
+                                teacher.teacher_id,
+                                teacher.first_name,
+                                teacher.last_name,
+                                teacher.email,
+                            )
+                        )
+                else:
+                    print("No teachers found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "2":
             # Add teacher
