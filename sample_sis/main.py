@@ -45,7 +45,6 @@ def handle_student_actions(student_dao):
         if choice == "1":
             # View entire student table
             print("Viewing entire student table:")
-            print("-----------------------------")
             try:
                 # Retrieve all students from the database
                 all_students = student_dao.get_all_students()
@@ -65,7 +64,6 @@ def handle_student_actions(student_dao):
         elif choice == "2":
             # Add Student
             print("Adding a new student:")
-            print("---------------------")
             student_id = input("Enter student ID: ")
             first_name = input("Enter first name: ")
             last_name = input("Enter last name: ")
@@ -127,7 +125,26 @@ def handle_student_actions(student_dao):
         elif choice == "4":
             # Delete student
             print("Deleting student:")
-            # Implement this option
+            student_id = input("Enter the student ID to delete: ")
+
+            try:
+                # Check if the student exists in the database
+                student = student_dao.get_student_by_id(student_id)
+
+                if student:
+                    confirm = input(
+                        "Are you sure you want to delete this student? (yes/no): "
+                    )
+                    if confirm.lower() == "yes":
+                        # Delete the student from the database
+                        student_dao.delete_student(student_id)
+                        print("Student deleted successfully.")
+                    else:
+                        print("Deletion canceled.")
+                else:
+                    print("Student not found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "5":
             break
