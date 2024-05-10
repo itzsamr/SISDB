@@ -1,6 +1,6 @@
-from util.DBConnUtil import create_connection
-from entity.Course import Course
-from exception.CourseNotFoundException import CourseNotFoundException
+from DBConnUtil import create_connection
+from Course import Course
+from CourseNotFoundException import CourseNotFoundException
 
 
 class CourseDAO:
@@ -44,3 +44,17 @@ class CourseDAO:
         cursor.execute(query, (course_id,))
         self.conn.commit()
         cursor.close()
+
+    def get_all_courses(self):
+        query = "SELECT * FROM Courses"
+        cursor = self.conn.cursor()
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        all_courses = []
+        for row in rows:
+            course = Course(*row)
+            all_courses.append(course)
+
+        return all_courses

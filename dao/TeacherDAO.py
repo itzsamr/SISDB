@@ -1,6 +1,6 @@
-from util.DBConnUtil import create_connection
-from entity.Teacher import Teacher
-from exception.TeacherNotFoundException import TeacherNotFoundException
+from DBConnUtil import create_connection
+from Teacher import Teacher
+from TeacherNotFoundException import TeacherNotFoundException
 
 
 class TeacherDAO:
@@ -44,3 +44,24 @@ class TeacherDAO:
         cursor.execute(query, (teacher_id,))
         self.conn.commit()
         cursor.close()
+
+    def get_all_teachers(self):
+        try:
+            query = "SELECT * FROM Teacher"
+            cursor = self.conn.cursor()
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            cursor.close()
+            all_teachers = []
+
+            # Iterate over the rows and create Teacher objects
+            for row in rows:
+                teacher = Teacher(*row)
+                all_teachers.append(teacher)
+
+            return all_teachers
+
+        except Exception as e:
+            # Handle any exceptions that may occur during the database operation
+            print("An error occurred:", e)
+            return []

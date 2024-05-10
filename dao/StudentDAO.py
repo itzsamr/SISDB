@@ -1,6 +1,6 @@
-from util.DBConnUtil import create_connection
-from entity.Student import Student
-from exception.StudentNotFoundException import StudentNotFoundException
+from DBConnUtil import create_connection
+from Student import Student
+from StudentNotFoundException import StudentNotFoundException
 
 
 class StudentDAO:
@@ -58,3 +58,18 @@ class StudentDAO:
         cursor.execute(query, (student_id,))
         self.conn.commit()
         cursor.close()
+
+    def get_all_students(self):
+        query = "SELECT * FROM Students"
+        cursor = self.conn.cursor()
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        # Create Student objects for each row and return a list of them
+        all_students = []
+        for row in rows:
+            student = Student(*row)
+            all_students.append(student)
+
+        return all_students
