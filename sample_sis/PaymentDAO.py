@@ -39,3 +39,52 @@ class PaymentDAO:
         for row in rows:
             payments.append(Payment(*row))
         return payments
+
+    def get_all_payments(self):
+        try:
+            query = "SELECT * FROM Payments"
+            cursor = self.conn.cursor()
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            cursor.close()
+
+            # Initialize a list to store Payment objects
+            all_payments = []
+
+            # Iterate over the rows and create Payment objects
+            for row in rows:
+                payment = Payment(*row)
+                all_payments.append(payment)
+
+            return all_payments
+
+        except Exception as e:
+            # Handle any exceptions that may occur during the database operation
+            print("An error occurred:", e)
+            return []
+
+    def get_payment_by_id(self, payment_id):
+        query = "SELECT * FROM Payments WHERE payment_id = ?"
+        cursor = self.conn.cursor()
+        cursor.execute(query, (payment_id,))
+        row = cursor.fetchone()
+        cursor.close()
+        if row:
+            return Payment(*row)
+        else:
+            return None
+
+    def update_payment(self, payment):
+        query = "UPDATE Payments SET student_id = ?, amount = ?, payment_date = ? WHERE payment_id = ?"
+        cursor = self.conn.cursor()
+        cursor.execute(
+            query,
+            (
+                payment.student_id,
+                payment.amount,
+                payment.payment_date,
+                payment.payment_id,
+            ),
+        )
+        self.conn.commit()
+        cursor.close()

@@ -507,22 +507,106 @@ def handle_payment_actions(payment_dao):
         if choice == "1":
             # View entire payment table
             print("Viewing entire payment table:")
-            # Implement this option
+            try:
+                # Retrieve all payments from the database
+                all_payments = payment_dao.get_all_payments()
+
+                # Check if there are any payments
+                if all_payments:
+                    # Print header
+                    print(
+                        "{:<10} {:<15} {:<15} {:<10}".format(
+                            "Payment ID", "Student ID", "Amount", "Payment Date"
+                        )
+                    )
+                    print("-" * 60)
+
+                    # Print each payment
+                    for payment in all_payments:
+                        print(
+                            "{:<10} {:<15} {:<15} {:<10}".format(
+                                payment.payment_id,
+                                payment.student_id,
+                                payment.amount,
+                                payment.payment_date,
+                            )
+                        )
+                else:
+                    print("No payments found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "2":
             # Add payment
             print("Adding a new payment:")
-            # Implement this option
+            try:
+                # Get input from the user
+                payment_id = input("Enter the payment ID: ")
+                student_id = input("Enter student ID: ")
+                amount = float(input("Enter payment amount: "))
+                payment_date = input("Enter payment date (YYYY-MM-DD): ")
+
+                # Create a new Payment object with payment_id
+                new_payment = Payment(payment_id, student_id, amount, payment_date)
+
+                # Add the new payment to the database
+                payment_dao.add_payment(new_payment)
+                print("Payment added successfully.")
+            except ValueError:
+                print("Invalid input for amount.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "3":
             # Update payment
             print("Updating payment:")
-            # Implement this option
+            try:
+                # Get input from the user
+                payment_id = input("Enter payment ID to update: ")
+                amount = float(input("Enter new payment amount: "))
+                payment_date = input("Enter new payment date (YYYY-MM-DD): ")
+
+                # Retrieve the payment from the database
+                payment = payment_dao.get_payment_by_id(payment_id)
+
+                if payment:
+                    # Update the payment object with new details
+                    payment.amount = amount
+                    payment.payment_date = payment_date
+
+                    # Update the payment in the database
+                    payment_dao.update_payment(payment)
+                    print("Payment updated successfully.")
+                else:
+                    print("Payment not found.")
+            except ValueError:
+                print("Invalid input for amount.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "4":
             # Delete payment
             print("Deleting payment:")
-            # Implement this option
+            payment_id = input("Enter payment ID to delete: ")
+
+            try:
+                # Check if the payment exists in the database
+                payment = payment_dao.get_payment_by_id(payment_id)
+
+                if payment:
+                    confirm = input(
+                        "Are you sure you want to delete this payment? (yes/no): "
+                    )
+                    if confirm.lower() == "yes":
+                        # Delete the payment from the database
+                        payment_dao.delete_payment(payment_id)
+                        print("Payment deleted successfully.")
+                    else:
+                        print("Deletion canceled.")
+                else:
+                    print("Payment not found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "5":
             break
