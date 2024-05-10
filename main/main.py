@@ -106,27 +106,157 @@ def main():
 
         elif choice == "3":
             # Delete Student
-            pass  # Implement this option
+            try:
+                student_id = input("Enter the student ID to delete: ")
+                # Check if the student exists in the database
+                student = student_dao.get_student_by_id(student_id)
+
+                if student:
+                    confirm = input(
+                        "Are you sure you want to delete this student? (yes/no): "
+                    )
+                    if confirm.lower() == "yes":
+                        # Delete the student from the database
+                        student_dao.delete_student(student_id)
+                        print("Student deleted successfully.")
+                    else:
+                        print("Deletion canceled.")
+                else:
+                    print("Student not found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "4":
             # Add Course
-            pass  # Implement this option
+            try:
+                print("Adding a new course:")
+                course_name = input("Enter course name: ")
+                credits = input("Enter credits: ")
+                teacher_id = input("Enter teacher ID: ")
+
+                # Create a Course object
+                new_course = Course(course_name, credits, teacher_id)
+
+                # Add the course to the database
+                course_dao.add_course(new_course)
+                print("Course added successfully.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "5":
             # Update Course
-            pass  # Implement this option
+            try:
+                course_id = input("Enter the course ID to update: ")
+                # Fetch course details from the database
+                course = course_dao.get_course_by_id(course_id)
+
+                if course:
+                    print("Current details of the course:")
+                    print("Course ID:", course.course_id)
+                    print("Course Name:", course.course_name)
+                    print("Credits:", course.credits)
+                    print("Teacher ID:", course.teacher_id)
+
+                    # Prompt user to enter updated details
+                    print("\nEnter updated details:")
+                    course_name = input("Enter course name: ")
+                    credits = input("Enter credits: ")
+                    teacher_id = input("Enter teacher ID: ")
+
+                    # Update the course object with new details
+                    course.course_name = course_name
+                    course.credits = credits
+                    course.teacher_id = teacher_id
+
+                    # Update the course in the database
+                    course_dao.update_course(course)
+                    print("Course details updated successfully.")
+                else:
+                    print("Course not found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "6":
             # Delete Course
-            pass  # Implement this option
+            try:
+                course_id = input("Enter the course ID to delete: ")
+                # Check if the course exists in the database
+                course = course_dao.get_course_by_id(course_id)
+
+                if course:
+                    confirm = input(
+                        "Are you sure you want to delete this course? (yes/no): "
+                    )
+                    if confirm.lower() == "yes":
+                        # Delete the course from the database
+                        course_dao.delete_course(course_id)
+                        print("Course deleted successfully.")
+                    else:
+                        print("Deletion canceled.")
+                else:
+                    print("Course not found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "7":
             # Enroll Student in Course
-            pass  # Implement this option
+            try:
+                student_id = input("Enter the student ID: ")
+                course_id = input("Enter the course ID: ")
+
+                # Check if the student and course exist in the database
+                student = student_dao.get_student_by_id(student_id)
+                course = course_dao.get_course_by_id(course_id)
+
+                if student and course:
+                    # Check if the student is already enrolled in the course
+                    existing_enrollments = (
+                        enrollment_dao.get_enrollments_by_student_course(
+                            student_id, course_id
+                        )
+                    )
+                    if existing_enrollments:
+                        raise DuplicateEnrollmentException(
+                            "Student is already enrolled in this course."
+                        )
+
+                    # Create an Enrollment object
+                    new_enrollment = Enrollment(student_id, course_id)
+
+                    # Add the enrollment to the database
+                    enrollment_dao.add_enrollment(new_enrollment)
+                    print("Student enrolled in the course successfully.")
+                else:
+                    if not student:
+                        raise StudentNotFoundException("Student not found.")
+                    if not course:
+                        raise CourseNotFoundException("Course not found.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "8":
             # Record Payment
-            pass  # Implement this option
+            try:
+                student_id = input("Enter the student ID: ")
+                amount = float(input("Enter the payment amount: "))
+                payment_date = input("Enter the payment date (YYYY-MM-DD): ")
+
+                # Check if the student exists in the database
+                student = student_dao.get_student_by_id(student_id)
+
+                if student:
+                    # Create a Payment object
+                    new_payment = Payment(student_id, amount, payment_date)
+
+                    # Add the payment to the database
+                    payment_dao.add_payment(new_payment)
+                    print("Payment recorded successfully.")
+                else:
+                    raise StudentNotFoundException("Student not found.")
+            except ValueError:
+                print("Invalid input for amount.")
+            except Exception as e:
+                print("An error occurred:", e)
 
         elif choice == "9":
             # Exit the program
