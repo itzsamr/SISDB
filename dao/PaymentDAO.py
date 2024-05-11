@@ -1,6 +1,6 @@
-from DBConnUtil import create_connection
-from Payment import Payment
-from PaymentNotFoundException import PaymentNotFoundException
+from util.DBConnUtil import create_connection
+from entity.Payment import Payment
+from exception.PaymentNotFoundException import PaymentNotFoundException
 
 
 class PaymentDAO:

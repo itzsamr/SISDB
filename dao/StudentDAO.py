@@ -1,6 +1,6 @@
-from DBConnUtil import create_connection
-from Student import Student
-from StudentNotFoundException import StudentNotFoundException
+from util.DBConnUtil import create_connection
+from entity.Student import Student
+from exception.StudentNotFoundException import StudentNotFoundException
 
 
 class StudentDAO:

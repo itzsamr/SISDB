@@ -1,6 +1,6 @@
-from DBConnUtil import create_connection
-from Teacher import Teacher
-from TeacherNotFoundException import TeacherNotFoundException
+from util.DBConnUtil import create_connection
+from entity.Teacher import Teacher
+from exception.TeacherNotFoundException import TeacherNotFoundException
 
 
 class TeacherDAO:

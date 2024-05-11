@@ -1,6 +1,6 @@
-from DBConnUtil import create_connection
-from Enrollment import Enrollment
-from EnrollmentNotFoundException import EnrollmentNotFoundException
+from util.DBConnUtil import create_connection
+from entity.Enrollment import Enrollment
+from exception.EnrollmentNotFoundException import EnrollmentNotFoundException
 
 
 class EnrollmentDAO:

@@ -1,6 +1,6 @@
-from DBConnUtil import create_connection
-from Course import Course
-from CourseNotFoundException import CourseNotFoundException
+from util.DBConnUtil import create_connection
+from entity.Course import Course
+from exception.CourseNotFoundException import CourseNotFoundException
 
 
 class CourseDAO:
