@@ -1,3 +1,5 @@
+from CourseDAO import CourseDAO
+from StudentDAO import StudentDAO
 from DBConnUtil import create_connection
 from Enrollment import Enrollment
 from EnrollmentNotFoundException import EnrollmentNotFoundException
@@ -110,3 +112,67 @@ class EnrollmentDAO:
         )
         self.conn.commit()
         cursor.close()
+
+    def generate_enrollment_report(course_name):
+        # Initialize CourseDAO and EnrollmentDAO objects
+        course_dao = CourseDAO()
+        enrollment_dao = EnrollmentDAO()
+
+        try:
+            # Get course details by name
+            course = course_dao.get_course_by_name(course_name)
+
+            if course:
+                # Retrieve enrollment records for the specified course
+                query = """
+                SELECT Enrollments.student_id, Students.first_name, Students.last_name, 
+                Enrollments.enrollment_date 
+                FROM Enrollments 
+                INNER JOIN Students ON Enrollments.student_id = Students.student_id 
+                INNER JOIN Courses ON Enrollments.course_id = Courses.course_id 
+                WHERE Courses.course_name = ?
+                """
+                enrollments = enrollment_dao.execute_query(query, (course_name,))
+
+                if enrollments:
+                    # Generate the report header
+                    report = f"Enrollment Report for Course: {course_name}\n\n"
+                    report += "{:<15} {:<20} {:<15}\n".format(
+                        "Student ID", "Student Name", "Enrollment Date"
+                    )
+                    report += "-" * 50 + "\n"
+
+                    # Add enrollment details to the report
+                    for enrollment in enrollments:
+                        student_id, first_name, last_name, enrollment_date = enrollment
+                        student_name = f"{first_name} {last_name}"
+                        report += "{:<15} {:<20} {:<15}\n".format(
+                            student_id, student_name, enrollment_date
+                        )
+
+                    # Display or save the report
+                    print(report)  # Displaying the report to the console
+                    # You can also save the report to a file if needed
+
+                else:
+                    print(f"No enrollments found for course: {course_name}")
+
+            else:
+                print(f"Course '{course_name}' not found.")
+
+        except Exception as e:
+            print("An error occurred:", e)
+
+    def get_enrollments_by_course_name(self, course_name):
+        query = """
+            SELECT Enrollments.student_id, Students.first_name, Students.last_name, Enrollments.enrollment_date
+            FROM Enrollments
+            INNER JOIN Students ON Enrollments.student_id = Students.student_id
+            INNER JOIN Courses ON Enrollments.course_id = Courses.course_id
+            WHERE Courses.course_name = ?
+        """
+        cursor = self.conn.cursor()
+        cursor.execute(query, (course_name,))
+        enrollments = cursor.fetchall()
+        cursor.close()
+        return enrollments

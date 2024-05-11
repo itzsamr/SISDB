@@ -1,3 +1,4 @@
+from dao.CourseDAO import CourseDAO
 from util.DBConnUtil import create_connection
 from entity.Enrollment import Enrollment
 from exception.EnrollmentNotFoundException import EnrollmentNotFoundException
@@ -110,3 +111,46 @@ class EnrollmentDAO:
         )
         self.conn.commit()
         cursor.close()
+
+    def generate_enrollment_report(course_name):
+        # Initialize EnrollmentDAO and CourseDAO objects
+        enrollment_dao = EnrollmentDAO()
+        course_dao = CourseDAO()
+
+        try:
+            # Get course ID for the given course name
+            course = course_dao.get_course_by_name(course_name)
+
+            if course:
+                # Retrieve enrollment records for the specified course
+                enrollments = enrollment_dao.get_enrollments_by_course(course.course_id)
+
+                if enrollments:
+                    # Generate the report header
+                    report = f"Enrollment Report for Course: {course_name}\n\n"
+                    report += "{:<15} {:<20} {:<15}\n".format(
+                        "Student ID", "Student Name", "Enrollment Date"
+                    )
+                    report += "-" * 50 + "\n"
+
+                    # Add enrollment details to the report
+                    for enrollment in enrollments:
+                        student_name = f"{enrollment.student.first_name} {enrollment.student.last_name}"
+                        report += "{:<15} {:<20} {:<15}\n".format(
+                            enrollment.student_id,
+                            student_name,
+                            enrollment.enrollment_date,
+                        )
+
+                    # Display or save the report
+                    print(report)  # Displaying the report to the console
+                    # You can also save the report to a file if needed
+
+                else:
+                    print(f"No enrollments found for course: {course_name}")
+
+            else:
+                print(f"Course '{course_name}' not found.")
+
+        except Exception as e:
+            print("An error occurred:", e)
