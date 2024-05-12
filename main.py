@@ -1,18 +1,6 @@
-from dao.StudentDAO import StudentDAO
-from dao.CourseDAO import CourseDAO
-from dao.EnrollmentDAO import EnrollmentDAO
-from dao.TeacherDAO import TeacherDAO
-from dao.PaymentDAO import PaymentDAO
-from exception.DuplicateEnrollmentException import DuplicateEnrollmentException
-from exception.CourseNotFoundException import CourseNotFoundException
-from exception.StudentNotFoundException import StudentNotFoundException
-from exception.TeacherNotFoundException import TeacherNotFoundException
-from exception.PaymentValidationException import PaymentValidationException
-from entity.Student import Student
-from entity.Course import Course
-from entity.Enrollment import Enrollment
-from entity.Teacher import Teacher
-from entity.Payment import Payment
+from dao import *
+from exception import *
+from entity import *
 
 
 # Function to display the main menu
@@ -23,7 +11,8 @@ def display_main_menu():
     print("3. Enrollments")
     print("4. Teachers")
     print("5. Payments")
-    print("6. Exit")
+    print("6. Generate Enrollment Report")
+    print("7. Exit")
 
 
 # Function to display the sub-menu for each entity
@@ -615,6 +604,54 @@ def handle_payment_actions(payment_dao):
             print("Invalid choice. Please enter a valid option.")
 
 
+# Define the generate_enrollment_report function
+def generate_enrollment_report(course_name):
+    # Initialize EnrollmentDAO and CourseDAO objects
+    enrollment_dao = EnrollmentDAO()
+    course_dao = CourseDAO()
+    student_dao = StudentDAO()
+
+    try:
+        # Get course ID for the given course name
+        course = course_dao.get_course_by_name(course_name)
+
+        if course:
+            # Retrieve enrollment records for the specified course using JOIN query
+            enrollments = enrollment_dao.get_enrollments_by_course_name(course_name)
+
+            if enrollments:
+                # Generate the report header
+                report = f"Enrollment Report for Course: {course_name}\n\n"
+                report += "{:<15} {:<20} {:<15}\n".format(
+                    "Student ID", "Student Name", "Enrollment Date"
+                )
+                report += "-" * 50 + "\n"
+
+                # Add enrollment details to the report
+                for enrollment in enrollments:
+                    # Fetch student details separately
+                    student = student_dao.get_student_by_id(enrollment.student_id)
+                    student_name = f"{student.first_name} {student.last_name}"
+                    report += "{:<15} {:<20} {:<15}\n".format(
+                        enrollment.student_id,
+                        student_name,
+                        enrollment.enrollment_date,
+                    )
+
+                # Display or save the report
+                print(report)  # Displaying the report to the console
+                # You can also save the report to a file if needed
+
+            else:
+                print(f"No enrollments found for course: {course_name}")
+
+        else:
+            print(f"Course '{course_name}' not found.")
+
+    except Exception as e:
+        print("An error occurred:", e)
+
+
 # Main function to run the SIS application
 def main():
     # Initialize DAO objects
@@ -645,6 +682,12 @@ def main():
             handle_payment_actions(payment_dao)
 
         elif choice == "6":
+            course_name = input(
+                "Enter the name of the course to generate the enrollment report: "
+            )
+            generate_enrollment_report(course_name)
+
+        elif choice == "7":
             print("Exiting the program. Goodbye!")
             break
 
