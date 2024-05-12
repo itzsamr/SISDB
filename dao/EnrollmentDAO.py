@@ -1,4 +1,5 @@
-from dao.CourseDAO import CourseDAO
+from CourseDAO import CourseDAO
+from StudentDAO import StudentDAO
 from util.DBConnUtil import create_connection
 from entity.Enrollment import Enrollment
 from exception.EnrollmentNotFoundException import EnrollmentNotFoundException
@@ -113,17 +114,25 @@ class EnrollmentDAO:
         cursor.close()
 
     def generate_enrollment_report(course_name):
-        # Initialize EnrollmentDAO and CourseDAO objects
-        enrollment_dao = EnrollmentDAO()
+        # Initialize CourseDAO and EnrollmentDAO objects
         course_dao = CourseDAO()
+        enrollment_dao = EnrollmentDAO()
 
         try:
-            # Get course ID for the given course name
+            # Get course details by name
             course = course_dao.get_course_by_name(course_name)
 
             if course:
                 # Retrieve enrollment records for the specified course
-                enrollments = enrollment_dao.get_enrollments_by_course(course.course_id)
+                query = """
+                SELECT Enrollments.student_id, Students.first_name, Students.last_name, 
+                Enrollments.enrollment_date 
+                FROM Enrollments 
+                INNER JOIN Students ON Enrollments.student_id = Students.student_id 
+                INNER JOIN Courses ON Enrollments.course_id = Courses.course_id 
+                WHERE Courses.course_name = ?
+                """
+                enrollments = enrollment_dao.execute_query(query, (course_name,))
 
                 if enrollments:
                     # Generate the report header
@@ -135,11 +144,10 @@ class EnrollmentDAO:
 
                     # Add enrollment details to the report
                     for enrollment in enrollments:
-                        student_name = f"{enrollment.student.first_name} {enrollment.student.last_name}"
+                        student_id, first_name, last_name, enrollment_date = enrollment
+                        student_name = f"{first_name} {last_name}"
                         report += "{:<15} {:<20} {:<15}\n".format(
-                            enrollment.student_id,
-                            student_name,
-                            enrollment.enrollment_date,
+                            student_id, student_name, enrollment_date
                         )
 
                     # Display or save the report
@@ -154,3 +162,17 @@ class EnrollmentDAO:
 
         except Exception as e:
             print("An error occurred:", e)
+
+    def get_enrollments_by_course_name(self, course_name):
+        query = """
+            SELECT Enrollments.student_id, Students.first_name, Students.last_name, Enrollments.enrollment_date
+            FROM Enrollments
+            INNER JOIN Students ON Enrollments.student_id = Students.student_id
+            INNER JOIN Courses ON Enrollments.course_id = Courses.course_id
+            WHERE Courses.course_name = ?
+        """
+        cursor = self.conn.cursor()
+        cursor.execute(query, (course_name,))
+        enrollments = cursor.fetchall()
+        cursor.close()
+        return enrollments

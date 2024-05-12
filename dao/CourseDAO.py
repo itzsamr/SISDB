@@ -58,3 +58,25 @@ class CourseDAO:
             all_courses.append(course)
 
         return all_courses
+
+    def get_course_by_name(self, course_name):
+        # Assuming you're using some database library to interact with the database
+        # Here's how you can modify the method to use parameterized queries
+        cursor = self.conn.cursor()
+
+        # Execute a parameterized query to select the course by name
+        query = "SELECT * FROM courses WHERE course_name = ?"
+        cursor.execute(query, (course_name,))  # Pass course_name as a tuple
+
+        # Fetch the course record
+        course_record = cursor.fetchone()
+
+        # Check if the course exists in the database
+        if course_record:
+            # Extract course details from the database record
+            course_id, course_name, credits, teacher_id = course_record
+            # Create and return a Course object with the retrieved details
+            return Course(course_id, course_name, credits, teacher_id)
+        else:
+            # Return None if the course is not found
+            return None
