@@ -1,6 +1,6 @@
-from dao import *
-from exception import *
-from entity import *
+from .dao import *
+from .exception import *
+from .entity import *
 
 
 # Function to display the main menu
