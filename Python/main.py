@@ -1,6 +1,7 @@
 from .dao import *
 from .exception import *
 from .entity import *
+from datetime import datetime
 
 
 # Function to display the main menu
@@ -11,7 +12,7 @@ def display_main_menu():
     print("3. Enrollments")
     print("4. Teachers")
     print("5. Payments")
-    print("6. Generate Enrollment Report")
+    print("6. SIS operations")
     print("7. Exit")
 
 
@@ -604,52 +605,165 @@ def handle_payment_actions(payment_dao):
             print("Invalid choice. Please enter a valid option.")
 
 
-# Define the generate_enrollment_report function
-def generate_enrollment_report(course_name):
-    # Initialize EnrollmentDAO and CourseDAO objects
-    enrollment_dao = EnrollmentDAO()
-    course_dao = CourseDAO()
-    student_dao = StudentDAO()
+# Function to handle the payment-related actions using SISDAO
+def handle_sis_actions(sis_dao):
+    while True:
+        print("\nSIS Menu:")
+        print("1. Enroll Student in Course")
+        print("2. Assign Teacher to Course")
+        print("3. Record Payment")
+        print("4. Generate Enrollment Report")
+        print("5. Generate Payment Report")
+        print("6. Calculate Course Statistics")
+        print("7. Back")
 
-    try:
-        # Get course ID for the given course name
-        course = course_dao.get_course_by_name(course_name)
+        choice = input("Enter your choice: ")
 
-        if course:
-            # Retrieve enrollment records for the specified course using JOIN query
-            enrollments = enrollment_dao.get_enrollments_by_course_name(course_name)
+        if choice == "1":
+            # Enroll Student in Course
+            print("Enrolling a student in a course:")
+            enrollment_id = input("Enter enrollment ID: ")
+            student_id = input("Enter student ID: ")
+            course_id = input("Enter course ID: ")
+            enrollment_date = input("Enter the date (YYYY-MM-DD): ")
 
-            if enrollments:
-                # Generate the report header
-                report = f"Enrollment Report for Course: {course_name}\n\n"
-                report += "{:<15} {:<20} {:<15}\n".format(
-                    "Student ID", "Student Name", "Enrollment Date"
-                )
-                report += "-" * 50 + "\n"
+            # Create an Enrollment object
+            new_enrollment = Enrollment(
+                enrollment_id, student_id, course_id, enrollment_date
+            )
 
-                # Add enrollment details to the report
-                for enrollment in enrollments:
-                    # Fetch student details separately
-                    student = student_dao.get_student_by_id(enrollment.student_id)
-                    student_name = f"{student.first_name} {student.last_name}"
-                    report += "{:<15} {:<20} {:<15}\n".format(
-                        enrollment.student_id,
-                        student_name,
-                        enrollment.enrollment_date,
-                    )
+            try:
+                # Add the enrollment to the database
+                sis_dao.add_enrollment(new_enrollment)
+                print("Student enrolled in the course successfully.")
+            except ValueError:
+                print("Invalid date format. Please enter date in YYYY-MM-DD format.")
+            except Exception as e:
+                print("An error occurred:", e)
 
-                # Display or save the report
-                print(report)  # Displaying the report to the console
-                # You can also save the report to a file if needed
+        elif choice == "2":
+            # Assign Teacher to Course
+            print("\nAssigning a teacher to a course:")
+            teacher_id = input("Enter teacher ID: ")
+            course_id = input("Enter course ID: ")
 
-            else:
-                print(f"No enrollments found for course: {course_name}")
+            try:
+                # Fetch teacher and course details from the database
+                teacher = TeacherDAO().get_teacher_by_id(teacher_id)
+                course = CourseDAO().get_course_by_id(course_id)
+
+                if teacher and course:
+                    # Assign the teacher to the course using SISDAO
+                    sis_dao.AssignTeacherToCourse(teacher, course)
+                    print("Teacher assigned to course successfully.")
+                else:
+                    print("Teacher or course not found.")
+            except Exception as e:
+                print("An error occurred:", e)
+
+        elif choice == "3":
+            # Record Payment
+            print("Recording a new payment:")
+            try:
+                # Get input from the user
+                payment_id = input("Enter the payment ID: ")
+                student_id = input("Enter student ID: ")
+                amount = float(input("Enter payment amount: "))
+                payment_date_str = input("Enter payment date (YYYY-MM-DD): ")
+
+                # Convert payment date string to datetime object
+                payment_date = datetime.strptime(payment_date_str, "%Y-%m-%d")
+
+                # Fetch student details from the database
+                student = StudentDAO().get_student_by_id(student_id)
+                if student:
+                    # Record the payment using SISDAO
+                    sis_dao.RecordPayment(payment_id, student, amount, payment_date)
+                    print("Payment recorded successfully.")
+                else:
+                    print("Student not found.")
+            except ValueError:
+                print("Invalid input for amount.")
+            except Exception as e:
+                print("An error occurred:", e)
+
+        elif choice == "4":
+            # Generate Enrollment Report
+            print("\nGenerating enrollment report:")
+            course_id = input("Enter course ID: ")
+
+            try:
+                # Fetch course details from the database
+                course = CourseDAO().get_course_by_id(course_id)
+                if course:
+                    # Generate enrollment report using SISDAO
+                    enrollment_report = sis_dao.GenerateEnrollmentReport(course)
+                    if enrollment_report:
+                        print("\nEnrollment Report:")
+                        for enrollment in enrollment_report:
+                            print(
+                                f"Student ID: {enrollment['student_id']}, Student Name: {enrollment['student_name']}"
+                            )
+                    else:
+                        print("No enrollments found for this course.")
+                else:
+                    print("Course not found.")
+            except Exception as e:
+                print("An error occurred:", e)
+
+        elif choice == "5":
+            # Generate Payment Report
+            print("\nGenerating payment report:")
+            student_id = input("Enter student ID: ")
+
+            try:
+                # Fetch student details from the database
+                student = StudentDAO().get_student_by_id(student_id)
+                if student:
+                    # Generate payment report using SISDAO
+                    payment_report = sis_dao.GeneratePaymentReport(student)
+                    if payment_report:
+                        print("\nPayment Report:")
+                        for payment in payment_report:
+                            print(
+                                f"Amount: {payment['amount']}, Payment Date: {payment['payment_date']}"
+                            )
+                    else:
+                        print("No payments found for this student.")
+                else:
+                    print("Student not found.")
+            except Exception as e:
+                print("An error occurred:", e)
+
+        elif choice == "6":
+            # Calculate Course Statistics
+            print("\nCalculating course statistics:")
+            course_id = input("Enter course ID: ")
+
+            try:
+                # Fetch course details from the database
+                course = CourseDAO().get_course_by_id(course_id)
+                if course:
+                    # Calculate course statistics using SISDAO
+                    course_statistics = sis_dao.CalculateCourseStatistics(course)
+                    if course_statistics:
+                        print("\nCourse Statistics:")
+                        print(
+                            f"Number of Enrollments: {course_statistics['enrollments']}"
+                        )
+                        print(f"Total Payments: {course_statistics['total_payments']}")
+                    else:
+                        print("No statistics found for this course.")
+                else:
+                    print("Course not found.")
+            except Exception as e:
+                print("An error occurred:", e)
+
+        elif choice == "7":
+            break
 
         else:
-            print(f"Course '{course_name}' not found.")
-
-    except Exception as e:
-        print("An error occurred:", e)
+            print("Invalid choice. Please enter a valid option.")
 
 
 # Main function to run the SIS application
@@ -660,6 +774,7 @@ def main():
     enrollment_dao = EnrollmentDAO()
     teacher_dao = TeacherDAO()
     payment_dao = PaymentDAO()
+    sis_dao = SISDAO()
 
     # Main menu loop
     while True:
@@ -682,10 +797,7 @@ def main():
             handle_payment_actions(payment_dao)
 
         elif choice == "6":
-            course_name = input(
-                "Enter the name of the course to generate the enrollment report: "
-            )
-            generate_enrollment_report(course_name)
+            handle_sis_actions(sis_dao)
 
         elif choice == "7":
             print("Exiting the program. Goodbye!")
