@@ -1,2 +1,1 @@
-from .DBConnUtil import *
-from .DBPropertyUtil import *
+from .DBConnUtil import create_connection

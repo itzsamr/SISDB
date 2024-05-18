@@ -1,6 +1,11 @@
-from .dao import *
-from .exception import *
-from .entity import *
+import sys
+
+sys.path.append(
+    "C:/Users/91915/OneDrive - Valliammai Engineering College/Desktop/SISDB"
+)
+from dao import *
+from exception import *
+from entity import *
 from datetime import datetime
 
 
