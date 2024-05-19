@@ -1,5 +1,5 @@
 import pyodbc
-from DBPropertyUtil import load_db_properties
+from .DBPropertyUtil import load_db_properties
 
 
 def create_connection():

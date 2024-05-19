@@ -1,5 +1,5 @@
-from CourseDAO import CourseDAO
-from StudentDAO import StudentDAO
+from .CourseDAO import CourseDAO
+from .StudentDAO import StudentDAO
 from util.DBConnUtil import create_connection
 from entity.Enrollment import Enrollment
 from exception.EnrollmentNotFoundException import EnrollmentNotFoundException
